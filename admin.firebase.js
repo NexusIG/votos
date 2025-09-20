@@ -1,4 +1,4 @@
-// Admin — Firestore con QR robusto, fallback y base URL opcional
+// Admin — Firestore con QR robusto, base fija y QR grande/legible
 (function(){
   var App = window.App||{};
   var db = App.db, $ = App.$, toast = App.toast, copy = App.copy;
@@ -17,7 +17,7 @@
   var btnCopy = $("#copyLink");
   var btnClose = $("#closeQr");
 
-  // --- Base URL robusta ---
+  // --- Base URL fija (usa __BASE_URL__ si existe, si no usa carpeta actual) ---
   function getBase() {
     var base = (window.__BASE_URL__ && String(window.__BASE_URL__).trim())
       || (location.origin + location.pathname.replace(/[^\/]*$/, '/'));
@@ -54,19 +54,37 @@
     return !!window.QRCode;
   }
 
+  // --- Dibuja QR grande, con fondo blanco y margen (mejor lectura) ---
   async function renderQR(targetEl, link){
     targetEl.innerHTML = "";
     var box = document.createElement("div");
-    box.style.display = "flex"; box.style.flexDirection = "column";
-    box.style.alignItems = "center"; box.style.gap = "8px";
+    box.style.display = "flex";
+    box.style.flexDirection = "column";
+    box.style.alignItems = "center";
+    box.style.gap = "8px";
     targetEl.appendChild(box);
+
+    // cuadro blanco para quiet zone
+    var qrWrap = document.createElement("div");
+    qrWrap.style.background = "#ffffff";
+    qrWrap.style.padding = "12px";
+    qrWrap.style.borderRadius = "8px";
+    box.appendChild(qrWrap);
 
     var ok = await ensureQRCode();
     if (ok){
-      var qrBox = document.createElement("div");
-      box.appendChild(qrBox);
-      try { new QRCode(qrBox, { text: link, width: 256, height: 256 }); }
-      catch(e){ console.warn("QR render error:", e); }
+      try {
+        new QRCode(qrWrap, {
+          text: link,
+          width: 320,
+          height: 320,
+          colorDark: "#000000",
+          colorLight: "#ffffff",
+          correctLevel: (window.QRCode && window.QRCode.CorrectLevel && window.QRCode.CorrectLevel.M) || 1
+        });
+      } catch (e) {
+        console.warn("QR render error:", e);
+      }
     } else {
       var warn = document.createElement("div");
       warn.className = "small";
@@ -78,6 +96,12 @@
     a.href = link; a.target = "_blank"; a.rel = "noopener";
     a.textContent = link; a.className = "small"; a.style.wordBreak = "break-all";
     box.appendChild(a);
+
+    var openBtn = document.createElement("button");
+    openBtn.className = "secondary";
+    openBtn.textContent = "Abrir link";
+    openBtn.onclick = function(){ window.open(link, "_blank", "noopener"); };
+    box.appendChild(openBtn);
   }
 
   // --- Crear encuesta ---
@@ -117,7 +141,7 @@
       }
 
       var link = pollUrl(pollId);
-      await renderQR(qrContainer, link);         // QR a la vista
+      await renderQR(qrContainer, link);         // QR visible
       await renderQR(qrModalBox, link);          // QR en modal
       qrLink.textContent = link;
       qrModal.classList.add("show");
