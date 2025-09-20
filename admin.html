@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Panel — Encuestas (Firebase)</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <!-- QR (CDN principal) -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/qrcodejs/1.0.0/qrcode.min.js"></script>
+
+  <!-- Firebase compat (sin imports) -->
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-analytics-compat.js"></script>
+
+  <!-- (Opcional) Fuerza dominio base para QR. Deja "" si no quieres forzarlo -->
+  <script>
+    // Ejemplo: window.__BASE_URL__ = "https://tu-app.vercel.app/";
+    window.__BASE_URL__ = "";
+  </script>
+
+  <script src="/app.firebase.js?v=9"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Crear encuesta</h1>
+    <div class="card grid grid-2">
+      <div>
+        <input id="title" type="text" placeholder="Título de la encuesta" />
+        <input id="candidate" type="text" placeholder="Nombre del candidato (opcional)" />
+        <input id="image" type="text" placeholder="URL de la foto (pública)" />
+        <input id="judges" type="text" placeholder="Códigos de jueces: J001,J002" />
+        <div class="flex">
+          <button id="createPoll">Crear y mostrar QR</button>
+          <button id="viewResultsBtn" class="secondary" style="display:none;">Ver resultados</button>
+        </div>
+        <p class="small">Los jueces se crean/actualizan por código. El público puede ser cualquier código.</p>
+      </div>
+      <div>
+        <div id="qrContainer" class="card" style="min-height:290px; display:flex; align-items:center; justify-content:center;">QR aquí</div>
+      </div>
+    </div>
+
+    <h2>Mis encuestas</h2>
+    <div class="card">
+      <table class="table" id="pollTable">
+        <thead><tr>
+          <th>Título</th><th>Estado</th><th>Creada</th><th>Acciones</th>
+        </tr></thead>
+        <tbody id="pollRows"><tr><td colspan="4" class="small">Cargando…</td></tr></tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- Modal QR -->
+  <div id="qrModal" class="modal">
+    <div class="modal-content">
+      <div class="qr-box">
+        <div id="qrModalBox"></div>
+        <div id="qrLink" class="small"></div>
+        <div class="flex">
+          <button id="copyLink" class="secondary">Copiar link</button>
+          <button id="closeQr" class="ghost">Cerrar</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script src="/admin.firebase.js?v=9" defer></script>
+</body>
+</html>

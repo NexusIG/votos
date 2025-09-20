@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Resultados en vivo (Firebase)</title>
+  <link rel="stylesheet" href="style.css" />
+
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-firestore-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/10.12.4/firebase-analytics-compat.js"></script>
+
+  <!-- (Opcional) Fuerza dominio base para compartir -->
+  <script>window.__BASE_URL__ = window.__BASE_URL__ || "";</script>
+
+  <script src="/app.firebase.js?v=9"></script>
+</head>
+<body>
+  <div class="container">
+    <h1>Resultados</h1>
+
+    <div id="pickPoll" class="card" style="display:none">
+      <h3>Elige una encuesta</h3>
+      <div id="pollList" class="grid grid-auto"></div>
+    </div>
+
+    <div id="header" class="card" style="display:none">
+      <div class="flex">
+        <img id="rPhoto" style="max-height:120px; display:none"/>
+        <div>
+          <h2 id="rTitle">—</h2>
+          <p id="rCand" class="small">—</p>
+          <p id="rState" class="tag">—</p>
+          <div class="flex">
+            <button id="btnShare" class="secondary">Copiar link de voto</button>
+            <button id="btnOpen" class="warning">Abrir/Cerrar</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="stats" class="grid grid-2" style="display:none">
+      <div class="card">
+        <h3>Promedio Jueces</h3>
+        <div class="big" id="avgJ">0.00</div>
+        <div class="bar"><span id="barJ"></span></div>
+        <p class="small" id="cntJ">0 votos</p>
+      </div>
+      <div class="card">
+        <h3>Promedio Público</h3>
+        <div class="big" id="avgP">0.00</div>
+        <div class="bar"><span id="barP"></span></div>
+        <p class="small" id="cntP">0 votos</p>
+      </div>
+      <div class="card" style="grid-column:1/-1">
+        <h3>Total ponderado</h3>
+        <div class="big" id="total">0.00</div>
+        <div class="bar"><span id="barT"></span></div>
+        <p class="small">60% jueces + 40% público.</p>
+      </div>
+    </div>
+
+    <div id="lists" class="grid grid-2" style="display:none">
+      <div class="card">
+        <h3>Detalle Jueces</h3>
+        <ul id="listJ"></ul>
+      </div>
+      <div class="card">
+        <h3>Detalle Público</h3>
+        <ul id="listP"></ul>
+      </div>
+    </div>
+  </div>
+
+  <script src="/results.firebase.js?v=9" defer></script>
+</body>
+</html>
